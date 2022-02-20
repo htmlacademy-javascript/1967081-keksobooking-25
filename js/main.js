@@ -1,39 +1,41 @@
+/* eslint-disable require-jsdoc */
 // https://learn.javascript.ru/task/random-min-max
-function randomIntegerMinMax(min, max) {
-    let result;
-    if (min < 0) {
-        min = 0;
-    }
-    if (max < 0) {
-        max = 0;
-    }
-    if (min < max) {
-        let swap = max;
-        max = min;
-        min = swap;
-    }
+function getRandomIntMinMax(min, max) {
+  if (min < 0) {
+    min = 0;
+  }
+  if (max < 0) {
+    max = 0;
+  }
+  if (min < max) {
+    const swap = max;
+    max = min;
+    min = swap;
+  }
 
-    result = min + Math.random() * (max - min);
-    return Math.round(result);
+  const rand = min + Math.random() * (max + 1 - min);
+  return Math.floor(rand);
 }
-randomIntegerMinMax(-1,3);
+getRandomIntMinMax(-1, 3);
 
-function randomFloatMinMax(min, max) {
-    let result;
-    if (min < 0) {
-        min = 0;
-    }
-    if (max < 0) {
-        max = 0;
-    }
-    if (min < max) {
-        let swap = max;
-        max = min;
-        min = swap;
-    }
+function getRandomFloatMinMax(min, max, decimalPlaces) {
+  if (min < 0) {
+    min = 0;
+  }
+  if (max < 0) {
+    max = 0;
+  }
+  if (min < max) {
+    const swap = max;
+    max = min;
+    min = swap;
+  }
 
-    result = min + Math.random() * (max - min);
-    return result;
+  if (typeof (decimalPlaces) == 'undefined') {
+    decimalPlaces = 2;
+  }
+  let result = min + Math.random() * (max + 1 - min);
+  result = result.toFixed(decimalPlaces);
+  return result;
 }
-
-randomFloatMinMax(-1.1,3.5);
+getRandomFloatMinMax(1, 3.5, 2);
