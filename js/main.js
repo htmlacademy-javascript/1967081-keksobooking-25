@@ -96,4 +96,4 @@ function createAnnouncements(amount=10) {
   return announcements;
 }
 
-console.log(createAnnouncements(10));
+createAnnouncements(10);
