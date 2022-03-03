@@ -15,75 +15,85 @@ function getRandomPositiveFloat (a, b, digits = 2) {
   const upper = Math.max(Math.abs(a), Math.abs(b));
   const result = Math.random() * (upper - lower) + lower;
 
-  return +result.toFixed(digits);
+  return Number(result.toFixed(digits));
 }
 
-const types = ['palace', 'flat', 'house', 'bungalow', 'hotel'];
-const times = ['12:00', '13:00', '14:00'];
-const features = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-const descriptions = ['Описание 1', 'Описание 2', 'Описание 3', 'Описание 4', 'Описание 5', 'Описание 6', 'Описание 7', 'Описание 8', 'Описание 9', 'Описание 10'];
+const TYPES = ['palace', 'flat', 'house', 'bungalow', 'hotel'];
+const TIMES = ['12:00', '13:00', '14:00'];
+const FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
+const DESCRIPTIONS = ['Описание 1', 'Описание 2', 'Описание 3', 'Описание 4', 'Описание 5', 'Описание 6', 'Описание 7', 'Описание 8', 'Описание 9', 'Описание 10'];
+const LAT_MIN = 35.65000;
+const LAT_MAX = 35.70000;
+const LAT_DIGITS = 5;
+const LNG_MIN = 139.70000;
+const LNG_MAX = 139.80000;
+const LNG_DIGITS = 5;
 
-function getRandomFeatures(){
+function getRandomFeatures() {
   const randomFeatures = [];
-  for (let i = 1; i<=7; i++){
-    const index = getRandomPositiveInteger(0,5);
-    const elem = features[index];
-    if (!randomFeatures.includes(elem)){
-      randomFeatures.push(elem);
-    }
+  const quantity = getRandomPositiveInteger(1,FEATURES.length);
+  const tempFeatures = FEATURES.slice();
+  for (let i = quantity; i >= 1; i--) {
+    const indexTempFeatures = getRandomPositiveInteger(0,tempFeatures.length-1);
+    randomFeatures.push(tempFeatures[indexTempFeatures]);
+    tempFeatures.splice(indexTempFeatures,1);
   }
   return randomFeatures;
 }
 
-function getPhotos(a, b){
+function getRandomPhoto(number) {
+  return `https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/${number}jpg`;
+}
+
+
+function getPhotos(quantity) {
   const randomPhotos = [];
-  for (let i=a; i<=b; i++){
-    randomPhotos.push(`https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/.${i}jpg`);
+  for (let i = 1; i <= quantity; i++){
+    randomPhotos.push(getRandomPhoto(i));
   }
   return randomPhotos;
 }
 
-function createObjects(amount=10) {
+function getAvatarUrl(number) {
+  const numberText = (number + 1 < 10) ? `0${number + 1}` : `${number + 1}`;
+  return `img/avatars/user${numberText}.png`;
+}
+
+function getRandomArrayElement(objArray) {
+  return objArray[getRandomPositiveInteger (0, objArray.length-1)];
+}
+
+function getOfferTitle(number) {
+  return `Announcement №${number + 1}`;
+}
+
+function getDescription(number) {
+  return DESCRIPTIONS[number];
+}
+
+function createAnnouncements(amount=10) {
   const announcements = [];
-  for (let i=0; i<amount; i++){
+  for (let i = 0; i < amount; i++){
     const newAnnouncement = {};
-    //author
     newAnnouncement.author = {};
-    const number = (i+1<10) ? `0${i+1}` : `${i+1}`;
-    //author.avatar
-    newAnnouncement.author.avatar = `img/avatars/user${number}.png`;
-    //offer
+    newAnnouncement.author.avatar = getAvatarUrl(i);
     newAnnouncement.offer = {};
-    //offer.title
-    //возможно добавить выбор из структуры по индексу
-    newAnnouncement.offer.title = `Announcement №${i+1}`;
-    //location
+    newAnnouncement.offer.title = getOfferTitle(i);
     newAnnouncement.location = {};
-    //location.lat
-    newAnnouncement.location.lat = getRandomPositiveFloat(35.65000,35.70000,5);
-    //location.lng
-    newAnnouncement.location.lng = getRandomPositiveFloat(139.70000,139.80000,5);
-    //price
+    newAnnouncement.location.lat = getRandomPositiveFloat(LAT_MIN, LAT_MAX, LAT_DIGITS);
+    newAnnouncement.location.lng = getRandomPositiveFloat(LNG_MIN, LNG_MAX, LNG_DIGITS);
     newAnnouncement.price = getRandomPositiveInteger (1, 200000);
-    //type
-    newAnnouncement.type = types[getRandomPositiveInteger (0, 4)];
-    //rooms
+    newAnnouncement.type = getRandomArrayElement(TYPES);
     newAnnouncement.rooms = getRandomPositiveInteger (1, 10);
-    //guests
     newAnnouncement.guests = getRandomPositiveInteger (1, 30);
-    //checkin
-    newAnnouncement.checkin = times[getRandomPositiveInteger (0, 2)];
-    //checkout
-    newAnnouncement.checkout = times[getRandomPositiveInteger (0, 2)];
-    //features
+    newAnnouncement.checkin = getRandomArrayElement(TIMES);
+    newAnnouncement.checkout = getRandomArrayElement(TIMES);
     newAnnouncement.features = getRandomFeatures();
-    //description
-    newAnnouncement.description = descriptions[i];
-    //photos
-    newAnnouncement.photos = getPhotos();
+    newAnnouncement.description = getDescription(i);
+    newAnnouncement.photos = getPhotos(3);
     announcements.push(newAnnouncement);
   }
   return announcements;
 }
 
-createObjects(10);
+console.log(createAnnouncements(10));
