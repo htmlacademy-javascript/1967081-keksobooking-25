@@ -1,5 +1,9 @@
 
 const orderForm = document.querySelector('.ad-form');
+const capacity = orderForm.querySelector('#capacity');
+const roomNumber = document.querySelector('#room_number');
+const title = orderForm.querySelector('#title');
+const price = orderForm.querySelector('#price');
 const pristine = new Pristine(orderForm, {
   classTo: 'ad-form__element', // Элемент, на который будут добавляться классы
   errorClass: 'form__item--invalid', // Класс, обозначающий невалидное поле
@@ -9,82 +13,63 @@ const pristine = new Pristine(orderForm, {
   errorTextClass: 'form__error' // Класс для элемента с текстом ошибки
 });
 
-orderForm.addEventListener('submit', (evt) => {
-  evt.preventDefault();
-  pristine.validate();
+const dictionaryRoomsAndGuests = {
+  '1' : ['1'],
+  '2' : ['1', '2'],
+  '3' : ['1', '2', '3'],
+  '100' : ['0'],
+};
+
+const dictionaryErrorMessage = {
+  '1' : 'Максимум гостей: 1',
+  '2' : 'Максимум гостей: 2',
+  '3' : 'Максимум гостей: 3',
+  '100' : 'Не для гостей',
+};
+
+orderForm.addEventListener('submit', (evt) => { 
+  const isFormValide = pristine.validate();
+  if (!isFormValide) {
+    evt.preventDefault();
+  }
 });
 
-function validationForms() {
-  titleVadlidation();
-  priceVadlidation();
-  roomsAndGuestsVadlidation();
-}
-
-function titleVadlidation() {
-  function validateTitle (value) {
-    return value.length >= 30 && value.length <= 100;
-  }
-  pristine.addValidator(orderForm.querySelector('#title'), validateTitle, 'От 30 до 100 символов');
-
-}
-
-function priceVadlidation() {
-  function validatePrice (value) {
-    return value > 0 && value <= 100000;
-  }
-  pristine.addValidator(orderForm.querySelector('#price'), validatePrice, 'Максимальная цена: 100000');
-
-}
-
-function roomsAndGuestsVadlidation() {
-
-  const capacity = orderForm.querySelector('#capacity');
-  const roomNumber = document.querySelector('#room_number');
-  const dictionary = {
-    '1' : ['1'],
-    '2' : ['1', '2'],
-    '3' : ['1', '2', '3'],
-    '100' : ['0'],
-  };
-
-  const dictionaryErrorMessage = {
-    '1' : 'Максимум гостей: 1',
-    '2' : 'Максимум гостей: 2',
-    '3' : 'Максимум гостей: 3',
-    '100' : 'Не для гостей',
-  };
-
-  function validateroomsAndGuests () {
-    const roomNumberValue = document.querySelector('#room_number').value;
-    const guests = dictionary[roomNumberValue];
-    const guest = capacity.value;
-    if (guests.indexOf(guest) < 0){
-      return false;
-    } else {
-      return true;
-    }
-  }
-
-  function getError() {
-    const roomNumberValue = document.querySelector('#room_number').value;
-    const guests = dictionary[roomNumberValue];
-    const guest = capacity.value;
-    if (guests.indexOf(guest) < 0){
-      return dictionaryErrorMessage[roomNumberValue];
-    } else {
-      return '';
-    }
-  }
-
-  function onGuestsChange() {
-    pristine.validate(capacity);
-  }
-
+function validateForms() {
+  pristine.addValidator(title, validateTitle, 'От 30 до 100 символов');
+  pristine.addValidator(price, validatePrice, 'Максимальная цена: 100000');
+  pristine.addValidator(capacity, validateRoomsAndGuests, getError);
   capacity.addEventListener('change', onGuestsChange);
   roomNumber.addEventListener('change', onGuestsChange);
+}
 
-  pristine.addValidator(capacity, validateroomsAndGuests, getError);
+function validateTitle (value) {
+  return value.length >= 30 && value.length <= 100;
+}
+
+function validatePrice (value) {
+  return value > 0 && value <= 100000;
+}
+
+function validateRoomsAndGuests() {
+
+  const guests = dictionaryRoomsAndGuests[roomNumber.value];
+  const guest = capacity.value;
+  return (guests.includes(guest));
 
 }
 
-export { validationForms };
+function onGuestsChange() {
+  pristine.validate(capacity);
+}
+
+function getError() {
+  const guests = dictionaryRoomsAndGuests[roomNumber.value];
+  const guest = capacity.value;
+  if (!guests.includes(guest)){
+    return dictionaryErrorMessage[roomNumber.value];
+  } else {
+    return '';
+  }
+}
+
+export { validateForms };
