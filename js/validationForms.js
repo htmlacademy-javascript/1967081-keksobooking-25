@@ -34,7 +34,7 @@ orderForm.addEventListener('submit', (evt) => {
   }
 });
 
-function validateForms() {
+function initializeFormValidation() {
   pristine.addValidator(title, validateTitle, 'От 30 до 100 символов');
   pristine.addValidator(price, validatePrice, 'Максимальная цена: 100000');
   pristine.addValidator(capacity, validateRoomsAndGuests, getError);
@@ -68,8 +68,8 @@ function getError() {
   if (!guests.includes(guest)){
     return dictionaryErrorMessage[roomNumber.value];
   } else {
-    return '';
+    return null;
   }
 }
 
-export { validateForms };
+export { initializeFormValidation };
