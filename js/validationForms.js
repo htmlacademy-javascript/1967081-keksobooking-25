@@ -27,7 +27,7 @@ const dictionaryErrorMessage = {
   '100' : 'Не для гостей',
 };
 
-orderForm.addEventListener('submit', (evt) => { 
+orderForm.addEventListener('submit', (evt) => {
   const isFormValide = pristine.validate();
   if (!isFormValide) {
     evt.preventDefault();
