@@ -124,7 +124,7 @@ function setAdress(lat, lng) {
 function initializatePoints(map, announcements) {
   announcements.forEach((element) => {
     const pointIcon = initializatePin(false);
-    const marker = initializateMarker(pointIcon, element.location.lat, element.location.lng, false);  
+    const marker = initializateMarker(pointIcon, element.location.lat, element.location.lng, false);
     marker.addTo(map).bindPopup(createCard(element));
   });
 }
