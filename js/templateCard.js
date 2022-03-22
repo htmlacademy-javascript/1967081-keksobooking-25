@@ -55,15 +55,6 @@ const GUESTS = {
   30: '-и гостей',
 };
 
-function createCardTemplates(announcements) {
-  const mapCanvas = document.querySelector('#map-canvas');
-  announcements.forEach((element) => {
-    const article = createCard(element);
-    mapCanvas.appendChild(article);
-  });
-}
-
-//убрать вывод в mapCanvas
 function createCard(announcement) {
   const template = document.querySelector('#card').content;
   const templateArticle = template.querySelector('article');
@@ -176,39 +167,10 @@ function getFeatureClass(feature) {
   return `popup__feature--${feature}`;
 }
 
-//есть список фич
-//есть темплейт мы смотрит в список фич
-//innerHTML пустую строку
-//и рисуем с нуля
-
-
-//module7-task1:
-//замудрёно, возможно стоило сделать через MAP
-// function checkFeatures(allFeatures, announcementFeatures) {
-//   const liList = allFeatures.children;
-//   for (let i = liList.length - 1; i >= 0; i--) {
-//     const className = liList[i].className;
-//     if (!findFeatures(announcementFeatures, className)) {
-//       liList[i].remove();
-//     }
-//   }
-// }
-
-// function findFeatures(elems, className) {
-//   let isFind = false;
-//   for (let i = 0; i < elems.length; i++) {
-//     const element = elems[i];
-//     if (className.indexOf(element) >= 0) {
-//       isFind = true;
-//     }
-//   }
-//   return isFind;
-// }
-
 function takeTypeRus(elem) {
   if (elem) {
     return TYPES[elem];
   }
 }
 
-export { createCardTemplates };
+export { createCard };
