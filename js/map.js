@@ -48,31 +48,31 @@ function initializateMap(announcements) {
   deactivateMap();
   createMap(announcements);
   activateMap();
-  setAdress(START_LAT, START_LNG);
+  adress.value = setAdress(START_LAT, START_LNG);
 }
 
 function createMap(announcements) {
   const map = initializateFirstLayer();
   initializateTitleLayer(map);
-  initializateIcon(map, true);
-  initializatePoints(map, announcements);
+  createIcon(map, true);
+  createPoints(map, announcements);
 }
 
-function initializateIcon(map, isMainIcon) {
-  const mainPinIcon = initializatePin(isMainIcon);
-  const marker = initializateMarker(mainPinIcon);
+function createIcon(map, isMainIcon) {
+  const mainPinIcon = createPin(isMainIcon);
+  const marker = createMarker(mainPinIcon);
   marker.addTo(map);
   marker.on('moveend', (evt) => {
-    const latLng = evt.target.getLatLng();
-    setAdress(latLng.lat, latLng.lng);
+    const coordinates = evt.target.getLatLng();
+    adress.value = setAdress(coordinates.lat, coordinates.lng);
   });
 }
 
-function initializateMarker(pinIcon, lat = START_LAT, lng = START_LNG, isDraggable = true) {
+function createMarker(pinIcon, lat = START_LAT, lng = START_LNG, isDraggable = true) {
   const marker = L.marker(
     {
-      lat: lat,
-      lng: lng,
+      lat,
+      lng,
     },
 
     {
@@ -83,20 +83,19 @@ function initializateMarker(pinIcon, lat = START_LAT, lng = START_LNG, isDraggab
   return marker;
 }
 
-function initializatePin(isMainIcon) {
-  if (isMainIcon) {
-    return L.icon({
+function createPin(isMainIcon) {
+  return (isMainIcon) ? (
+    L.icon({
       iconUrl: ICON_URL,
       iconSize: [ICON_SIZE_WIDTH, ICON_SIZE_HEIGHT],
       iconAnchor: [ICON_ANCHOR_WIDTH, ICON_ANCHOR_HEIGHT],
-    });
-  } else {
-    return L.icon({
+    })
+  ) : (
+    L.icon({
       iconUrl: POINT_URL,
       iconSize: [POINT_SIZE_WIDTH, POINT_SIZE_HEIGHT],
       iconAnchor: [POINT_ANCHOR_WIDTH, POINT_ANCHOR_HEIGHT],
-    });
-  }
+    }));
 }
 
 function initializateFirstLayer() {
@@ -118,13 +117,13 @@ function initializateTitleLayer(map) {
 }
 
 function setAdress(lat, lng) {
-  adress.value = `${lat.toFixed(MAX_DIGITS_LAT)}, ${lng.toFixed(MAX_DIGITS_LNG)}`;
+  return `${lat.toFixed(MAX_DIGITS_LAT)}, ${lng.toFixed(MAX_DIGITS_LNG)}`;
 }
 
-function initializatePoints(map, announcements) {
+function createPoints(map, announcements) {
   announcements.forEach((element) => {
-    const pointIcon = initializatePin(false);
-    const marker = initializateMarker(pointIcon, element.location.lat, element.location.lng, false);
+    const pointIcon = createPin(false);
+    const marker = createMarker(pointIcon, element.location.lat, element.location.lng, false);
     marker.addTo(map).bindPopup(createCard(element));
   });
 }
