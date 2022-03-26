@@ -62,7 +62,7 @@ function createIcon(map, isMainIcon) {
   const mainPinIcon = createPin(isMainIcon);
   const marker = createMarker(mainPinIcon);
   marker.addTo(map);
-  marker.on('moveend', (evt) => {
+  marker.addEventListener('moveend', (evt) => {
     const coordinates = evt.target.getLatLng();
     adress.value = setAdress(coordinates.lat, coordinates.lng);
   });

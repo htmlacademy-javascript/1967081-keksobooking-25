@@ -1,3 +1,5 @@
+import { onPriceChange } from './validationForms.js';
+
 const sliderElement = document.querySelector('.ad-form__slider');
 const valueElement = document.querySelector('#price');
 const MIN_RANGE = 0;
@@ -19,6 +21,7 @@ function initializatePriceSlider() {
 
   sliderElement.noUiSlider.on('update', () => {
     valueElement.value = sliderElement.noUiSlider.get();
+    onPriceChange();
   });
 }
 
