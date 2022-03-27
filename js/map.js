@@ -1,3 +1,4 @@
+import { getDataFromServer } from './fetch.js';
 import { createCard } from './templateCard.js';
 
 const adForm = document.querySelector('.ad-form');
@@ -44,17 +45,17 @@ function activateMap() {
   }
 }
 
-function initializateMap(announcements) {
-  deactivateMap();
-  createMap(announcements);
-  activateMap();
+function initializateMap() {
+  getDataFromServer(createMap);
   adress.value = setAdress(START_LAT, START_LNG);
 }
 
 function createMap(announcements) {
+  deactivateMap();
   const map = initializateFirstLayer();
   initializateTitleLayer(map);
   createIcon(map, true);
+  activateMap();
   createPoints(map, announcements);
 }
 

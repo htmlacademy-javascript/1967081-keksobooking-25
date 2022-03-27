@@ -89,7 +89,7 @@ function createCard(announcement) {
   } else {
     checkinCheckout.classList.add(HIDDEN_CLASS);
   }
-  if (offer.features.length) {
+  if (offer.features && offer.features.length) {
     const features = createFeatures(offer.features);
     addFeatures(popupFeatures, features);
   } else {
@@ -100,7 +100,7 @@ function createCard(announcement) {
   } else {
     description.classList.add(HIDDEN_CLASS);
   }
-  if (offer.photos.length) {
+  if (offer.photos && offer.photos.length) {
     const photos = getPhotos(popupPhotos, offer.photos);
     addPhotosHtml(popupPhotos, photos);
   } else {

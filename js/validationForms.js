@@ -1,3 +1,4 @@
+import { sendDataToServer, showAlert } from './fetch.js';
 
 const orderForm = document.querySelector('.ad-form');
 const capacity = orderForm.querySelector('#capacity');
@@ -5,6 +6,7 @@ const roomNumber = document.querySelector('#room_number');
 const title = orderForm.querySelector('#title');
 const price = orderForm.querySelector('#price');
 const type = orderForm.querySelector('#type');
+const submitButton = document.querySelector('.ad-form__submit');
 const MAX_PRICE = 100000;
 const pristine = new Pristine(orderForm, {
   classTo: 'ad-form__element', // Элемент, на который будут добавляться классы
@@ -29,10 +31,31 @@ const dictionaryErrorMessage = {
   '100': 'Не для гостей',
 };
 
+const blockSubmitButton = () => {
+  submitButton.disabled = true;
+};
+
+const unblockSubmitButton = () => {
+  submitButton.disabled = false;
+};
+
 orderForm.addEventListener('submit', (evt) => {
-  const isFormValide = pristine.validate();
-  if (!isFormValide) {
-    evt.preventDefault();
+  evt.preventDefault();
+  const isValid = pristine.validate();
+  if (isValid) {
+    blockSubmitButton();
+    console.log(...(new FormData(evt.target).entries()));
+    sendDataToServer(
+      () => {
+        unblockSubmitButton();
+        orderForm.reset();
+      },
+      (message) => {
+        showAlert(message);
+        unblockSubmitButton();
+      },
+      new FormData(evt.target),
+    );
   }
 });
 
@@ -66,7 +89,7 @@ function getMinPrice() {
     case 'hotel': return 3000;
     case 'house': return 5000;
     case 'palace': return 10000;
-    default: return 0;
+    default: throw new Error(`Unknown order state: '${type.value}'!`);
   }
 }
 
