@@ -1,12 +1,16 @@
-import { sendDataToServer, showAlert } from './fetch.js';
+import { sendDataToServer } from './fetch.js';
 
 const orderForm = document.querySelector('.ad-form');
+const resetButton = document.querySelector('.ad-form__reset');
+const filtersForm = document.querySelector('.map__filters');
 const capacity = orderForm.querySelector('#capacity');
 const roomNumber = document.querySelector('#room_number');
 const title = orderForm.querySelector('#title');
 const price = orderForm.querySelector('#price');
 const type = orderForm.querySelector('#type');
 const submitButton = document.querySelector('.ad-form__submit');
+const templateSuccess = document.querySelector('#success').content;
+const templateError = document.querySelector('#error').content;
 const MAX_PRICE = 100000;
 const pristine = new Pristine(orderForm, {
   classTo: 'ad-form__element', // Элемент, на который будут добавляться классы
@@ -39,24 +43,71 @@ const unblockSubmitButton = () => {
   submitButton.disabled = false;
 };
 
+function resetForms() {
+  orderForm.reset();
+  filtersForm.reset();
+}
+
+function showSuccessMessage() {
+  const cloneTemplateSuccess = templateSuccess.cloneNode(true);
+  const divSuccess = cloneTemplateSuccess.querySelector('div');
+  document.addEventListener('click', () => {
+    divSuccess.remove();
+    document.removeEventListener('click');
+  });
+  document.addEventListener('keydown', (evt) => {
+    if (evt.key === 'Escape'){
+      divSuccess.remove();
+      document.removeEventListener('keydown');
+    }
+  });
+  document.body.append(cloneTemplateSuccess);
+}
+
+function showErrorMessage() {
+  const cloneTemplateError = templateError.cloneNode(true);
+  const div = cloneTemplateError.querySelector('div');
+  const button = cloneTemplateError.querySelector('button');
+  document.addEventListener('click', () => {
+    div.remove();
+    document.removeEventListener('click');
+  });
+  document.addEventListener('keydown', (evt) => {
+    if (evt.key === 'Escape'){
+      div.remove();
+      document.removeEventListener('keydown');
+    }
+  });
+  button.addEventListener('click', (evt) => {
+    evt.preventDefault();
+    div.remove();
+  });
+  document.body.append(cloneTemplateError);
+}
+
 orderForm.addEventListener('submit', (evt) => {
   evt.preventDefault();
   const isValid = pristine.validate();
   if (isValid) {
     blockSubmitButton();
-    console.log(...(new FormData(evt.target).entries()));
     sendDataToServer(
       () => {
         unblockSubmitButton();
-        orderForm.reset();
+        resetForms();
+        showSuccessMessage();
       },
       (message) => {
-        showAlert(message);
+        showErrorMessage(message);
         unblockSubmitButton();
       },
       new FormData(evt.target),
     );
   }
+});
+
+resetButton.addEventListener('click', (evt) => {
+  evt.preventDefault();
+  resetForms();
 });
 
 function initializeFormValidation() {

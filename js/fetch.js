@@ -41,26 +41,18 @@ const sendDataToServer = (onSuccess, onFail, body) => {
     'https://25.javascript.pages.academy/keksobooking',
     {
       method: 'POST',
-      mode: 'no-cors',
-      // headers: {
-      //   'Content-Type': 'multipart/form-data',
-      // },
       body
     }
   )
-    // .then((response) => response.json())
     .then((response) => {
-      console.log({ response });
       if (response.ok) {
         onSuccess();
       } else {
-        console.log(response.body);
-        onFail('response.NotOk');
+        onFail();
       }
     })
-    .catch((err) => {
-      console.log({ err });
-      onFail(err.message);
+    .catch(() => {
+      onFail();
     });
 };
 
