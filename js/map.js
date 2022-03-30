@@ -1,5 +1,6 @@
-import { getDataFromServer } from './fetch.js';
+import { loadDataFromServer } from './fetch.js';
 import { createCard } from './templateCard.js';
+import { createTemplateMessages } from './validationForms.js';
 
 const adForm = document.querySelector('.ad-form');
 const adFormFieldsets = adForm.querySelectorAll('fieldset');
@@ -46,7 +47,8 @@ function activateMap() {
 }
 
 function initializateMap() {
-  getDataFromServer(createMap);
+  createTemplateMessages();
+  loadDataFromServer(createMap);
   adress.value = setAdress(START_LAT, START_LNG);
 }
 

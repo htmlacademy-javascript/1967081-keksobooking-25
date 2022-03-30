@@ -12,6 +12,8 @@ const submitButton = document.querySelector('.ad-form__submit');
 const templateSuccess = document.querySelector('#success').content;
 const templateError = document.querySelector('#error').content;
 const MAX_PRICE = 100000;
+const TEXT_ERROR_SEND_DATA = 'Ошибка размещения объявления!';
+const HIDDEN_CLASS = 'hidden';
 const pristine = new Pristine(orderForm, {
   classTo: 'ad-form__element', // Элемент, на который будут добавляться классы
   errorClass: 'form__item--invalid', // Класс, обозначающий невалидное поле
@@ -48,60 +50,89 @@ function resetForms() {
   filtersForm.reset();
 }
 
-function showSuccessMessage() {
-  const cloneTemplateSuccess = templateSuccess.cloneNode(true);
-  const divSuccess = cloneTemplateSuccess.querySelector('div');
-  document.addEventListener('click', () => {
-    divSuccess.remove();
-    document.removeEventListener('click');
-  });
-  document.addEventListener('keydown', (evt) => {
-    if (evt.key === 'Escape'){
-      divSuccess.remove();
-      document.removeEventListener('keydown');
-    }
-  });
-  document.body.append(cloneTemplateSuccess);
+function hideElement(elem) {
+  elem.classList.add(HIDDEN_CLASS);
 }
 
-function showErrorMessage() {
-  const cloneTemplateError = templateError.cloneNode(true);
-  const div = cloneTemplateError.querySelector('div');
-  const button = cloneTemplateError.querySelector('button');
+function createTemplateSuccessMessage() {
+  const successMessage = templateSuccess.cloneNode(true);
+  const divSuccess = successMessage.querySelector('div');
   document.addEventListener('click', () => {
-    div.remove();
-    document.removeEventListener('click');
+    hideElement(divSuccess);
   });
-  document.addEventListener('keydown', (evt) => {
-    if (evt.key === 'Escape'){
-      div.remove();
-      document.removeEventListener('keydown');
-    }
+  document.addEventListener('keydown', () => {
+    hideElement(divSuccess);
   });
-  button.addEventListener('click', (evt) => {
+  divSuccess.classList.add(HIDDEN_CLASS);
+  hideElement(divSuccess);
+  document.body.append(divSuccess);
+}
+
+function createTemplateErrorMessage() {
+  const errorMessage = templateError.cloneNode(true);
+  const errorDiv = errorMessage.querySelector('div');
+  const errorButton = errorMessage.querySelector('button');
+  document.addEventListener('click', () => {
+    hideElement(errorDiv);
+  });
+  document.addEventListener('keydown', () => {
+    hideElement(errorDiv);
+  });
+  hideElement(errorDiv);
+  errorButton.addEventListener('click', (evt) => {
     evt.preventDefault();
-    div.remove();
+    hideElement(errorDiv);
   });
-  document.body.append(cloneTemplateError);
+  document.body.append(errorMessage);
+}
+
+function createTemplateMessages() {
+  createTemplateSuccessMessage();
+  createTemplateErrorMessage();
+}
+
+function showSuccessMessage() {
+  const divSuccess = document.querySelector('.success');
+  divSuccess.classList.remove(HIDDEN_CLASS);
+}
+
+function showErrorMessage(message) {
+  const errorDiv = document.querySelector('.error');
+  const errorText = document.querySelector('.error__message');
+  errorText.textContent = message;
+  errorDiv.classList.remove(HIDDEN_CLASS);
+}
+
+function onSendDataToServerSuccess() {
+  unblockSubmitButton();
+  resetForms();
+  showSuccessMessage();
+}
+
+function onSendDataToServerFail() {
+  showErrorMessage(TEXT_ERROR_SEND_DATA);
+  unblockSubmitButton();
+}
+
+function onSubmitValidForm(evt) {
+  blockSubmitButton();
+  sendDataToServer(
+    () => {
+      onSendDataToServerSuccess();
+    },
+    () => {
+      onSendDataToServerFail();
+    },
+    new FormData(evt.target),
+  );
 }
 
 orderForm.addEventListener('submit', (evt) => {
   evt.preventDefault();
   const isValid = pristine.validate();
+  // const isValid = true;
   if (isValid) {
-    blockSubmitButton();
-    sendDataToServer(
-      () => {
-        unblockSubmitButton();
-        resetForms();
-        showSuccessMessage();
-      },
-      (message) => {
-        showErrorMessage(message);
-        unblockSubmitButton();
-      },
-      new FormData(evt.target),
-    );
+    onSubmitValidForm(evt);
   }
 });
 
@@ -170,4 +201,4 @@ function getError() {
   }
 }
 
-export { initializeFormValidation, onPriceChange };
+export { initializeFormValidation, onPriceChange, showErrorMessage, createTemplateMessages };

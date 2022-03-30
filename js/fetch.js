@@ -1,39 +1,20 @@
-const ALERT_SHOW_TIME = 5000;
+import { showErrorMessage } from './validationForms.js';
 
-const showAlert = (message) => {
-  const alertContainer = document.createElement('div');
-  alertContainer.style.zIndex = 100;
-  alertContainer.style.position = 'absolute';
-  alertContainer.style.left = 0;
-  alertContainer.style.top = 1;
-  alertContainer.style.right = 0;
-  alertContainer.style.padding = '10px 3px';
-  alertContainer.style.fontSize = '20px';
-  alertContainer.style.textAlign = 'center';
-  alertContainer.style.backgroundColor = 'red';
+const TEXT_ERROR_GETDATA = 'Не удалось загрузить объявления!';
 
-  alertContainer.textContent = message;
-
-  document.body.append(alertContainer);
-
-  setTimeout(() => {
-    alertContainer.remove();
-  }, ALERT_SHOW_TIME);
-};
-
-const getDataFromServer = (onSuccess) => {
+const loadDataFromServer = (onSuccess) => {
   fetch('https://25.javascript.pages.academy/keksobooking/data')
     .then((response) => {
       if (response.ok) {
         return response.json();
       } else {
-        showAlert('Не удалось получить объявления. Попробуйте позже!');
+        throw new Error();
       }
     })
-    .then((wizards) => {
-      onSuccess(wizards);
+    .then((announcements) => {
+      onSuccess(announcements);
     })
-    .catch(() => showAlert('Не удалось получить объявления. Попробуйте позже!'));
+    .catch(() => showErrorMessage(TEXT_ERROR_GETDATA));
 };
 
 const sendDataToServer = (onSuccess, onFail, body) => {
@@ -48,7 +29,7 @@ const sendDataToServer = (onSuccess, onFail, body) => {
       if (response.ok) {
         onSuccess();
       } else {
-        onFail();
+        throw new Error();
       }
     })
     .catch(() => {
@@ -56,4 +37,4 @@ const sendDataToServer = (onSuccess, onFail, body) => {
     });
 };
 
-export { getDataFromServer, sendDataToServer, showAlert };
+export { loadDataFromServer, sendDataToServer};
