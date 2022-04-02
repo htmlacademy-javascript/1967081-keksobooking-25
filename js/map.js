@@ -1,4 +1,6 @@
+import { loadDataFromServer } from './fetch.js';
 import { createCard } from './templateCard.js';
+import { createTemplateMessages } from './validationForms.js';
 
 const adForm = document.querySelector('.ad-form');
 const adFormFieldsets = adForm.querySelectorAll('fieldset');
@@ -44,17 +46,18 @@ function activateMap() {
   }
 }
 
-function initializateMap(announcements) {
-  deactivateMap();
-  createMap(announcements);
-  activateMap();
+function initializateMap() {
+  createTemplateMessages();
+  loadDataFromServer(createMap);
   adress.value = setAdress(START_LAT, START_LNG);
 }
 
 function createMap(announcements) {
+  deactivateMap();
   const map = initializateFirstLayer();
   initializateTitleLayer(map);
   createIcon(map, true);
+  activateMap();
   createPoints(map, announcements);
 }
 
