@@ -1,4 +1,5 @@
 import { loadDataFromServer } from './fetch.js';
+import { getAdsInFilters } from './selection.js';
 import { createCard } from './templateCard.js';
 import { createTemplateMessages } from './validationForms.js';
 
@@ -22,7 +23,22 @@ const POINT_SIZE_HEIGHT = 52;
 const POINT_ANCHOR_WIDTH = 26;
 const POINT_ANCHOR_HEIGHT = 52;
 const POINT_URL = './img/pin.svg';
+const ADS_COUNT = 10;
+const map = initializateFirstLayer();
+const pointsLayer = createPointsLayer();
+let allAnnouncements = [];
 
+const onChangeFilters = () => {
+  const announcements = [...allAnnouncements];
+  createPoints(announcements);
+};
+
+// const onChangeFiltersDebounce = () => {
+//   debounce(
+//     onChangeFilters,
+//     RERENDER_DELAY,
+//   );
+// };
 
 function deactivateMap() {
   adForm.classList.add('ad-form--disabled');
@@ -48,20 +64,20 @@ function activateMap() {
 
 function initializateMap() {
   createTemplateMessages();
+  deactivateMap();
   loadDataFromServer(createMap);
   adress.value = setAdress(START_LAT, START_LNG);
 }
 
 function createMap(announcements) {
-  deactivateMap();
-  const map = initializateFirstLayer();
-  initializateTitleLayer(map);
-  createIcon(map, true);
+  allAnnouncements = [...announcements];
+  initializateTitleLayer();
+  createIcon(true);
   activateMap();
-  createPoints(map, announcements);
+  onChangeFilters();
 }
 
-function createIcon(map, isMainIcon) {
+function createIcon(isMainIcon) {
   const mainPinIcon = createPin(isMainIcon);
   const marker = createMarker(mainPinIcon);
   marker.addTo(map);
@@ -102,15 +118,15 @@ function createPin(isMainIcon) {
 }
 
 function initializateFirstLayer() {
-  const map = L.map('map-canvas')
+  return L.map('map-canvas')
     .setView({
       lat: START_LAT,
       lng: START_LNG,
     }, START_MAP_ZOOM);
-  return map;
+
 }
 
-function initializateTitleLayer(map) {
+function initializateTitleLayer() {
   L.tileLayer(
     'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
     {
@@ -119,16 +135,40 @@ function initializateTitleLayer(map) {
   ).addTo(map);
 }
 
+function createPointsLayer() {
+  return  L.layerGroup().addTo(map);
+}
+
 function setAdress(lat, lng) {
   return `${lat.toFixed(MAX_DIGITS_LAT)}, ${lng.toFixed(MAX_DIGITS_LNG)}`;
 }
 
-function createPoints(map, announcements) {
-  announcements.forEach((element) => {
-    const pointIcon = createPin(false);
-    const marker = createMarker(pointIcon, element.location.lat, element.location.lng, false);
-    marker.addTo(map).bindPopup(createCard(element));
+function createPoints(announcements) {
+  pointsLayer.clearLayers();
+  const filteredAnnouncement = getAdsInFilters(announcements);
+  let count = 0;
+  filteredAnnouncement.forEach((element) => {
+    if (count < ADS_COUNT) {
+      const pointIcon = createPin(false);
+      const marker = createMarker(pointIcon, element.location.lat, element.location.lng, false);
+      marker.addTo(pointsLayer).bindPopup(createCard(element));
+      count++;
+    }
   });
 }
 
-export { initializateMap };
+
+// function createPoints(map, announcements) {
+//   let count = 0;
+//   announcements.forEach((element) => {
+//     const isInFilters = checkAdsInFilters(element);
+//     if (count < ADS_COUNT && isInFilters) {
+//       const pointIcon = createPin(false);
+//       const marker = createMarker(pointIcon, element.location.lat, element.location.lng, false);
+//       marker.addTo(map).bindPopup(createCard(element));
+//       count++;
+//     }
+//   });
+// }
+
+export { initializateMap, onChangeFilters };
