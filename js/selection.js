@@ -26,7 +26,7 @@ function checkHousingType(offer, isInFilters) {
   if (housingType.value === 'any') {
     return isInFilters;
   }
-  if (!(offer.type === housingType.value)) {
+  if (offer.type !== housingType.value) {
     return false;
   }
   return isInFilters;
@@ -39,7 +39,7 @@ function checkHousingPrice(offer, isInFilters) {
   if (offer.price) {
     const priceMin = PRICE_FILTERS[housingPrice.value].priceMin;
     const priceMax = PRICE_FILTERS[housingPrice.value].priceMax;
-    if (!(offer.price >= priceMin && offer.price <= priceMax)) {
+    if (offer.price < priceMin || offer.price > priceMax) {
       return false;
     }
   }
@@ -50,7 +50,7 @@ function checkHousingRooms(offer, isInFilters) {
   if (housingRooms.value === 'any') {
     return isInFilters;
   }
-  if (!(offer.rooms === Number(housingRooms.value))) {
+  if (offer.rooms !== Number(housingRooms.value)) {
     return false;
   }
   return isInFilters;
@@ -63,22 +63,11 @@ function checkHousingGuests(offer, isInFilters) {
   if ((Number(housingGuests.value) === 0 && offer.guests !== 0)) {
     return false;
   }
-  if (!(offer.guests >= Number(housingGuests.value))) {
+  if (offer.guests < Number(housingGuests.value)) {
     return false;
   }
   return isInFilters;
 }
-
-// function findFeaturesInCheckedList(feature) {
-//   let isInFilters = false;
-//   for (let i = 0; i < housingFeaturesChecked.length; i++) {
-//     const checkedInput = housingFeaturesChecked[i];
-//     if (checkedInput.value === feature){
-//       isInFilters = true;
-//     }
-//   }
-//   return isInFilters;
-// }
 
 function getArrayCheckedFeaturesInputs(housingFeaturesChecked) {
   const arrayChekedInputs = [];
@@ -97,7 +86,7 @@ function checkHousingFeatures(offer, isInFilters, housingFeaturesChecked) {
     return isInFilters;
   }
 
-  const isNotFound = checkedFeaturesInputs.some((elem)=> offer.features.indexOf(elem) < 0);
+  const isNotFound = checkedFeaturesInputs.some((elem)=> offer.features.includes(elem) === false);
   if (isNotFound) {
     return false;
   }
@@ -105,7 +94,7 @@ function checkHousingFeatures(offer, isInFilters, housingFeaturesChecked) {
   return isInFilters;
 }
 
-function checkfilters(announcement) {
+function checkFilters(announcement) {
   let isInFilters = true;
   const housingFeaturesChecked = housingFeaturesFieldset.querySelectorAll('.map__checkbox:checked');
   const offer = announcement.offer;
@@ -119,7 +108,7 @@ function checkfilters(announcement) {
 
 function getAdsInFilters(announcements) {
   const cloneAnnouncements = [...announcements];
-  const filteredAnnouncements = cloneAnnouncements.filter(checkfilters);
+  const filteredAnnouncements = cloneAnnouncements.filter(checkFilters);
   return filteredAnnouncements;
 }
 

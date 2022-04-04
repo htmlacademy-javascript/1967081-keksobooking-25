@@ -24,7 +24,7 @@ const POINT_ANCHOR_WIDTH = 26;
 const POINT_ANCHOR_HEIGHT = 52;
 const POINT_URL = './img/pin.svg';
 const ADS_COUNT = 10;
-const map = initializateFirstLayer();
+const map = createFirstLayer();
 const pointsLayer = createPointsLayer();
 let allAnnouncements = [];
 
@@ -32,13 +32,6 @@ const onChangeFilters = () => {
   const announcements = [...allAnnouncements];
   createPoints(announcements);
 };
-
-// const onChangeFiltersDebounce = () => {
-//   debounce(
-//     onChangeFilters,
-//     RERENDER_DELAY,
-//   );
-// };
 
 function deactivateMap() {
   adForm.classList.add('ad-form--disabled');
@@ -66,24 +59,24 @@ function initializateMap() {
   createTemplateMessages();
   deactivateMap();
   loadDataFromServer(createMap);
-  adress.value = setAdress(START_LAT, START_LNG);
+  adress.value = getAdress(START_LAT, START_LNG);
 }
 
 function createMap(announcements) {
   allAnnouncements = [...announcements];
   initializateTitleLayer();
-  createIcon(true);
+  createIcon();
   activateMap();
   onChangeFilters();
 }
 
-function createIcon(isMainIcon) {
-  const mainPinIcon = createPin(isMainIcon);
+function createIcon() {
+  const mainPinIcon = createPin(true);
   const marker = createMarker(mainPinIcon);
   marker.addTo(map);
   marker.addEventListener('moveend', (evt) => {
     const coordinates = evt.target.getLatLng();
-    adress.value = setAdress(coordinates.lat, coordinates.lng);
+    adress.value = getAdress(coordinates.lat, coordinates.lng);
   });
 }
 
@@ -117,7 +110,7 @@ function createPin(isMainIcon) {
     }));
 }
 
-function initializateFirstLayer() {
+function createFirstLayer() {
   return L.map('map-canvas')
     .setView({
       lat: START_LAT,
@@ -139,7 +132,7 @@ function createPointsLayer() {
   return  L.layerGroup().addTo(map);
 }
 
-function setAdress(lat, lng) {
+function getAdress(lat, lng) {
   return `${lat.toFixed(MAX_DIGITS_LAT)}, ${lng.toFixed(MAX_DIGITS_LNG)}`;
 }
 
@@ -156,19 +149,5 @@ function createPoints(announcements) {
     }
   });
 }
-
-
-// function createPoints(map, announcements) {
-//   let count = 0;
-//   announcements.forEach((element) => {
-//     const isInFilters = checkAdsInFilters(element);
-//     if (count < ADS_COUNT && isInFilters) {
-//       const pointIcon = createPin(false);
-//       const marker = createMarker(pointIcon, element.location.lat, element.location.lng, false);
-//       marker.addTo(map).bindPopup(createCard(element));
-//       count++;
-//     }
-//   });
-// }
 
 export { initializateMap, onChangeFilters };
