@@ -1,6 +1,7 @@
 import { loadDataFromServer } from './fetch.js';
 import { getAdsInFilters } from './selection.js';
 import { createCard } from './templateCard.js';
+import { debounce } from './utils.js';
 import { createTemplateMessages } from './validationForms.js';
 
 const adForm = document.querySelector('.ad-form');
@@ -26,10 +27,10 @@ const POINT_URL = './img/pin.svg';
 const ADS_COUNT = 10;
 const map = createFirstLayer();
 const pointsLayer = createPointsLayer();
-let allAnnouncements = [];
+const filters = document.querySelector('.map__filters-container');
+const RERENDER_DELAY = 1000;
 
-const onChangeFilters = () => {
-  const announcements = [...allAnnouncements];
+const onChangeFilters = (announcements) => {
   createPoints(announcements);
 };
 
@@ -55,6 +56,14 @@ function activateMap() {
   }
 }
 
+function addEventFilters(announcements) {
+  const getDebouncedFunction = (copyAnnouncements) => debounce(() => {
+    onChangeFilters(copyAnnouncements);
+  }, RERENDER_DELAY);
+  const callbackOnChangeFilters = getDebouncedFunction(announcements);
+  filters.addEventListener('change', callbackOnChangeFilters);
+}
+
 function initializateMap() {
   createTemplateMessages();
   deactivateMap();
@@ -63,11 +72,11 @@ function initializateMap() {
 }
 
 function createMap(announcements) {
-  allAnnouncements = [...announcements];
+  addEventFilters(announcements);
   initializateTitleLayer();
   createIcon();
   activateMap();
-  onChangeFilters();
+  onChangeFilters(announcements);
 }
 
 function createIcon() {
@@ -129,7 +138,7 @@ function initializateTitleLayer() {
 }
 
 function createPointsLayer() {
-  return  L.layerGroup().addTo(map);
+  return L.layerGroup().addTo(map);
 }
 
 function getAdress(lat, lng) {

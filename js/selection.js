@@ -70,11 +70,9 @@ function checkHousingGuests(offer, isInFilters) {
 }
 
 function getArrayCheckedFeaturesInputs(housingFeaturesChecked) {
-  const arrayChekedInputs = [];
-  for (let i = 0; i < housingFeaturesChecked.length; i++) {
-    arrayChekedInputs.push(housingFeaturesChecked[i].value);
-  }
-  return arrayChekedInputs;
+
+  return housingFeaturesChecked.length ? [...housingFeaturesChecked].map((elem) => elem.value) : [];
+
 }
 
 function checkHousingFeatures(offer, isInFilters, housingFeaturesChecked) {
