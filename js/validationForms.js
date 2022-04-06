@@ -201,4 +201,4 @@ function getError() {
   }
 }
 
-export { initializeFormValidation, onPriceChange, showErrorMessage, createTemplateMessages };
+export { initializeFormValidation, onPriceChange, showErrorMessage, createTemplateMessages, MAX_PRICE };

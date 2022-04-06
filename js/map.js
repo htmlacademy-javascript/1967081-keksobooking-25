@@ -1,5 +1,7 @@
 import { loadDataFromServer } from './fetch.js';
+import { getAdsInFilters } from './selection.js';
 import { createCard } from './templateCard.js';
+import { debounce } from './utils.js';
 import { createTemplateMessages } from './validationForms.js';
 
 const adForm = document.querySelector('.ad-form');
@@ -22,7 +24,15 @@ const POINT_SIZE_HEIGHT = 52;
 const POINT_ANCHOR_WIDTH = 26;
 const POINT_ANCHOR_HEIGHT = 52;
 const POINT_URL = './img/pin.svg';
+const ADS_COUNT = 10;
+const map = createFirstLayer();
+const pointsLayer = createPointsLayer();
+const filters = document.querySelector('.map__filters-container');
+const RERENDER_DELAY = 1000;
 
+const onChangeFilters = (announcements) => {
+  createPoints(announcements);
+};
 
 function deactivateMap() {
   adForm.classList.add('ad-form--disabled');
@@ -46,28 +56,36 @@ function activateMap() {
   }
 }
 
+function addEventFilters(announcements) {
+  const getDebouncedFunction = (copyAnnouncements) => debounce(() => {
+    onChangeFilters(copyAnnouncements);
+  }, RERENDER_DELAY);
+  const callbackOnChangeFilters = getDebouncedFunction(announcements);
+  filters.addEventListener('change', callbackOnChangeFilters);
+}
+
 function initializateMap() {
   createTemplateMessages();
+  deactivateMap();
   loadDataFromServer(createMap);
-  adress.value = setAdress(START_LAT, START_LNG);
+  adress.value = getAdress(START_LAT, START_LNG);
 }
 
 function createMap(announcements) {
-  deactivateMap();
-  const map = initializateFirstLayer();
-  initializateTitleLayer(map);
-  createIcon(map, true);
+  addEventFilters(announcements);
+  initializateTitleLayer();
+  createIcon();
   activateMap();
-  createPoints(map, announcements);
+  onChangeFilters(announcements);
 }
 
-function createIcon(map, isMainIcon) {
-  const mainPinIcon = createPin(isMainIcon);
+function createIcon() {
+  const mainPinIcon = createPin(true);
   const marker = createMarker(mainPinIcon);
   marker.addTo(map);
   marker.addEventListener('moveend', (evt) => {
     const coordinates = evt.target.getLatLng();
-    adress.value = setAdress(coordinates.lat, coordinates.lng);
+    adress.value = getAdress(coordinates.lat, coordinates.lng);
   });
 }
 
@@ -101,16 +119,16 @@ function createPin(isMainIcon) {
     }));
 }
 
-function initializateFirstLayer() {
-  const map = L.map('map-canvas')
+function createFirstLayer() {
+  return L.map('map-canvas')
     .setView({
       lat: START_LAT,
       lng: START_LNG,
     }, START_MAP_ZOOM);
-  return map;
+
 }
 
-function initializateTitleLayer(map) {
+function initializateTitleLayer() {
   L.tileLayer(
     'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
     {
@@ -119,16 +137,26 @@ function initializateTitleLayer(map) {
   ).addTo(map);
 }
 
-function setAdress(lat, lng) {
+function createPointsLayer() {
+  return L.layerGroup().addTo(map);
+}
+
+function getAdress(lat, lng) {
   return `${lat.toFixed(MAX_DIGITS_LAT)}, ${lng.toFixed(MAX_DIGITS_LNG)}`;
 }
 
-function createPoints(map, announcements) {
-  announcements.forEach((element) => {
-    const pointIcon = createPin(false);
-    const marker = createMarker(pointIcon, element.location.lat, element.location.lng, false);
-    marker.addTo(map).bindPopup(createCard(element));
+function createPoints(announcements) {
+  pointsLayer.clearLayers();
+  const filteredAnnouncement = getAdsInFilters(announcements);
+  let count = 0;
+  filteredAnnouncement.forEach((element) => {
+    if (count < ADS_COUNT) {
+      const pointIcon = createPin(false);
+      const marker = createMarker(pointIcon, element.location.lat, element.location.lng, false);
+      marker.addTo(pointsLayer).bindPopup(createCard(element));
+      count++;
+    }
   });
 }
 
-export { initializateMap };
+export { initializateMap, onChangeFilters };
