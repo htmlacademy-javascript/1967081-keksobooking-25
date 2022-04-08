@@ -35,10 +35,6 @@ const onChangeFilters = (announcements) => {
   createPoints(announcements);
 };
 
-const resetMainIconLocation = (mainIcon) => {
-  createIcon(mainIcon);
-};
-
 function deactivateMap() {
   adForm.classList.add('ad-form--disabled');
   for (let i = 0; i < adFormFieldsets.length; i++) {
@@ -174,4 +170,4 @@ function createPoints(announcements) {
   });
 }
 
-export { initializateMap, onChangeFilters, resetMainIconLocation, createIconStartLocation};
+export { initializateMap, onChangeFilters, createIconStartLocation};
