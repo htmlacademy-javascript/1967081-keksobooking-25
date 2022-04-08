@@ -4,7 +4,6 @@ import { initializatePriceSlider } from './slider.js';
 import { onUserEvents } from './userEvents.js';
 import { addImages } from './avatar.js';
 
-
 initializatePriceSlider();
 initializeFormValidation();
 initializateMap();

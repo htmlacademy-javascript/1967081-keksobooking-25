@@ -1,4 +1,6 @@
 import { sendDataToServer } from './fetch.js';
+import { createIconStartLocation } from './map.js';
+import { MAX_PRICE } from './slider.js';
 
 const orderForm = document.querySelector('.ad-form');
 const resetButton = document.querySelector('.ad-form__reset');
@@ -11,7 +13,6 @@ const type = orderForm.querySelector('#type');
 const submitButton = document.querySelector('.ad-form__submit');
 const templateSuccess = document.querySelector('#success').content;
 const templateError = document.querySelector('#error').content;
-const MAX_PRICE = 100000;
 const TEXT_ERROR_SEND_DATA = 'Ошибка размещения объявления!';
 const HIDDEN_CLASS = 'hidden';
 const pristine = new Pristine(orderForm, {
@@ -48,6 +49,8 @@ const unblockSubmitButton = () => {
 function resetForms() {
   orderForm.reset();
   filtersForm.reset();
+  createIconStartLocation();
+  price.value = Number(price.getAttribute('placeholder'));
 }
 
 function hideElement(elem) {

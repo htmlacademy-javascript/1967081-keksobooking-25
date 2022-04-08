@@ -26,12 +26,17 @@ const POINT_ANCHOR_HEIGHT = 52;
 const POINT_URL = './img/pin.svg';
 const ADS_COUNT = 10;
 const map = createFirstLayer();
-const pointsLayer = createPointsLayer();
+const mainIconLayer = createNewLayer();
+const pointsLayer = createNewLayer();
 const filters = document.querySelector('.map__filters-container');
 const RERENDER_DELAY = 1000;
 
 const onChangeFilters = (announcements) => {
   createPoints(announcements);
+};
+
+const resetMainIconLocation = (mainIcon) => {
+  createIcon(mainIcon);
 };
 
 function deactivateMap() {
@@ -68,25 +73,35 @@ function initializateMap() {
   createTemplateMessages();
   deactivateMap();
   loadDataFromServer(createMap);
-  adress.value = getAdress(START_LAT, START_LNG);
+}
+
+function addEventsMainMarker(marker) {
+  marker.addTo(mainIconLayer);
+  marker.addEventListener('moveend', (evt) => {
+    const coordinates = evt.target.getLatLng();
+    setAdress(coordinates.lat, coordinates.lng);
+  });
 }
 
 function createMap(announcements) {
   addEventFilters(announcements);
   initializateTitleLayer();
-  createIcon();
+  createIconStartLocation();
   activateMap();
   onChangeFilters(announcements);
 }
 
-function createIcon() {
+function createIconStartLocation() {
+  const mainIcon = getIcon();
+  setAdress(START_LAT, START_LNG);
+  addEventsMainMarker(mainIcon);
+}
+
+function getIcon() {
+  mainIconLayer.clearLayers();
   const mainPinIcon = createPin(true);
   const marker = createMarker(mainPinIcon);
-  marker.addTo(map);
-  marker.addEventListener('moveend', (evt) => {
-    const coordinates = evt.target.getLatLng();
-    adress.value = getAdress(coordinates.lat, coordinates.lng);
-  });
+  return marker;
 }
 
 function createMarker(pinIcon, lat = START_LAT, lng = START_LNG, isDraggable = true) {
@@ -137,12 +152,12 @@ function initializateTitleLayer() {
   ).addTo(map);
 }
 
-function createPointsLayer() {
+function createNewLayer() {
   return L.layerGroup().addTo(map);
 }
 
-function getAdress(lat, lng) {
-  return `${lat.toFixed(MAX_DIGITS_LAT)}, ${lng.toFixed(MAX_DIGITS_LNG)}`;
+function setAdress(lat, lng) {
+  adress.value = `${lat.toFixed(MAX_DIGITS_LAT)}, ${lng.toFixed(MAX_DIGITS_LNG)}`;
 }
 
 function createPoints(announcements) {
@@ -159,4 +174,4 @@ function createPoints(announcements) {
   });
 }
 
-export { initializateMap, onChangeFilters };
+export { initializateMap, onChangeFilters, resetMainIconLocation, createIconStartLocation};
