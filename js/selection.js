@@ -1,4 +1,4 @@
-import { MAX_PRICE } from './validationForms.js';
+import { MAX_PRICE } from './slider.js';
 
 const formFiltres = document.querySelector('.map__filters-container');
 const housingType = formFiltres.querySelector('#housing-type');
