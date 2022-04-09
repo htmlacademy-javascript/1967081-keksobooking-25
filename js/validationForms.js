@@ -16,12 +16,12 @@ const submitButton = document.querySelector('.ad-form__submit');
 const templateSuccess = document.querySelector('#success').content;
 const templateError = document.querySelector('#error').content;
 const pristine = new Pristine(orderForm, {
-  classTo: 'ad-form__element', // Элемент, на который будут добавляться классы
-  errorClass: 'form__item--invalid', // Класс, обозначающий невалидное поле
-  successClass: 'form__item--valid', // Класс, обозначающий валидное поле
-  errorTextParent: 'ad-form__element', // Элемент, куда будет выводиться текст с ошибкой
-  errorTextTag: 'span', // Тег, который будет обрамлять текст ошибки
-  errorTextClass: 'form__error' // Класс для элемента с текстом ошибки
+  classTo: 'ad-form__element',
+  errorClass: 'form__item--invalid',
+  successClass: 'form__item--valid',
+  errorTextParent: 'ad-form__element',
+  errorTextTag: 'span',
+  errorTextClass: 'form__error'
 });
 
 const dictionaryRoomsAndGuests = {
@@ -133,7 +133,6 @@ function onSubmitValidForm(evt) {
 orderForm.addEventListener('submit', (evt) => {
   evt.preventDefault();
   const isValid = pristine.validate();
-  // const isValid = true;
   if (isValid) {
     onSubmitValidForm(evt);
   }
@@ -151,6 +150,7 @@ function initializeFormValidation() {
   capacity.addEventListener('change', onGuestsChange);
   roomNumber.addEventListener('change', onGuestsChange);
   price.addEventListener('change', onPriceChange);
+  type.addEventListener('change', onTypeChange);
 }
 
 function validateTitle(value) {
@@ -188,6 +188,11 @@ function validateRoomsAndGuests() {
 
 function onPriceChange() {
   pristine.validate(price);
+}
+
+function onTypeChange() {
+  const minPrice = getMinPrice();
+  price.setAttribute('placeholder', minPrice);
 }
 
 function onGuestsChange() {
