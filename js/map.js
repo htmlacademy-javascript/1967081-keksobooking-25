@@ -4,11 +4,7 @@ import { createCard } from './templateCard.js';
 import { debounce } from './utils.js';
 import { createTemplateMessages } from './validationForms.js';
 
-const adForm = document.querySelector('.ad-form');
-const adFormFieldsets = adForm.querySelectorAll('fieldset');
-const mapFilter = document.querySelector('.map__filters');
-const mapFilterFieldsets = mapFilter.querySelectorAll('select,fieldset');
-const adress = document.querySelector('#address');
+const RERENDER_DELAY = 500;
 const START_LAT = 35.68950;
 const START_LNG = 139.69171;
 const START_MAP_ZOOM = 10;
@@ -25,11 +21,15 @@ const POINT_ANCHOR_WIDTH = 26;
 const POINT_ANCHOR_HEIGHT = 52;
 const POINT_URL = './img/pin.svg';
 const ADS_COUNT = 10;
+const adForm = document.querySelector('.ad-form');
+const adFormFieldsets = adForm.querySelectorAll('fieldset');
+const mapFilter = document.querySelector('.map__filters');
+const mapFilterFieldsets = mapFilter.querySelectorAll('select,fieldset');
+const adress = document.querySelector('#address');
 const map = createFirstLayer();
 const mainIconLayer = createNewLayer();
 const pointsLayer = createNewLayer();
 const filters = document.querySelector('.map__filters-container');
-const RERENDER_DELAY = 1000;
 
 const onChangeFilters = (announcements) => {
   createPoints(announcements);

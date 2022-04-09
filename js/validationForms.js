@@ -2,6 +2,8 @@ import { sendDataToServer } from './fetch.js';
 import { createIconStartLocation } from './map.js';
 import { MAX_PRICE } from './slider.js';
 
+const TEXT_ERROR_SEND_DATA = 'Ошибка размещения объявления!';
+const HIDDEN_CLASS = 'hidden';
 const orderForm = document.querySelector('.ad-form');
 const resetButton = document.querySelector('.ad-form__reset');
 const filtersForm = document.querySelector('.map__filters');
@@ -13,8 +15,6 @@ const type = orderForm.querySelector('#type');
 const submitButton = document.querySelector('.ad-form__submit');
 const templateSuccess = document.querySelector('#success').content;
 const templateError = document.querySelector('#error').content;
-const TEXT_ERROR_SEND_DATA = 'Ошибка размещения объявления!';
-const HIDDEN_CLASS = 'hidden';
 const pristine = new Pristine(orderForm, {
   classTo: 'ad-form__element', // Элемент, на который будут добавляться классы
   errorClass: 'form__item--invalid', // Класс, обозначающий невалидное поле
