@@ -7,7 +7,7 @@ const housingRooms = formFiltres.querySelector('#housing-rooms');
 const housingGuests = formFiltres.querySelector('#housing-guests');
 const housingFeaturesFieldset = formFiltres.querySelector('#housing-features');
 
-const PRICE_FILTERS = {
+const priceFilters = {
   'middle': {
     priceMin: 10000,
     priceMax: 50000,
@@ -37,8 +37,8 @@ function checkHousingPrice(offer, isInFilters) {
     return isInFilters;
   }
   if (offer.price) {
-    const priceMin = PRICE_FILTERS[housingPrice.value].priceMin;
-    const priceMax = PRICE_FILTERS[housingPrice.value].priceMax;
+    const priceMin = priceFilters[housingPrice.value].priceMin;
+    const priceMax = priceFilters[housingPrice.value].priceMax;
     if (offer.price < priceMin || offer.price > priceMax) {
       return false;
     }

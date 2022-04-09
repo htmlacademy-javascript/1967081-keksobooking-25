@@ -63,6 +63,7 @@ function addEventFilters(announcements) {
   }, RERENDER_DELAY);
   const callbackOnChangeFilters = getDebouncedFunction(announcements);
   filters.addEventListener('change', callbackOnChangeFilters);
+  filters.addEventListener('reset', callbackOnChangeFilters);
 }
 
 function initializateMap() {
@@ -160,14 +161,16 @@ function createPoints(announcements) {
   pointsLayer.clearLayers();
   const filteredAnnouncement = getAdsInFilters(announcements);
   let count = 0;
-  filteredAnnouncement.forEach((element) => {
+  for (let i = 0; i < filteredAnnouncement.length; i++) {
     if (count < ADS_COUNT) {
       const pointIcon = createPin(false);
-      const marker = createMarker(pointIcon, element.location.lat, element.location.lng, false);
-      marker.addTo(pointsLayer).bindPopup(createCard(element));
+      const marker = createMarker(pointIcon, filteredAnnouncement[i].location.lat, filteredAnnouncement[i].location.lng, false);
+      marker.addTo(pointsLayer).bindPopup(createCard(filteredAnnouncement[i]));
       count++;
+    } else {
+      break;
     }
-  });
+  }
 }
 
-export { initializateMap, onChangeFilters, createIconStartLocation};
+export { initializateMap, onChangeFilters, createIconStartLocation };

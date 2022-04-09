@@ -1,7 +1,7 @@
 const timein = document.querySelector('#timein');
 const timeout = document.querySelector('#timeout');
 
-function onUserEvents() {
+function initializateUserEvents() {
   timein.addEventListener('change', onChangeTimein);
   timeout.addEventListener('change', onChangeTimeout);
 }
@@ -14,4 +14,4 @@ function onChangeTimeout() {
   timein.value = timeout.value;
 }
 
-export { onUserEvents };
+export { initializateUserEvents };

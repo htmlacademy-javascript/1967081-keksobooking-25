@@ -1,4 +1,4 @@
-const TYPES = {
+const types = {
   'palace': 'Дворец',
   'flat': 'Квартира',
   'house': 'Дом',
@@ -6,7 +6,7 @@ const TYPES = {
   'hotel': 'Отель',
 };
 
-const ROOMS = {
+const roomsDeclination = {
   1: 'комната',
   2: 'комнаты',
   3: 'комнаты',
@@ -19,7 +19,7 @@ const ROOMS = {
   10: 'комнат',
 };
 
-const GUESTS = {
+const guestsDeclination = {
   1: '-ого гостя',
   2: '-ух гостей',
   3: '-ёх гостей',
@@ -120,8 +120,8 @@ function getCheckinCheckout(checkin, checkout) {
 }
 
 function getRoomsGuests(rooms, guests) {
-  const textRooms = ROOMS[rooms];
-  const textGuests = GUESTS[guests];
+  const textRooms = roomsDeclination[rooms];
+  const textGuests = guestsDeclination[guests];
   return  `${rooms} ${textRooms} для ${guests}${textGuests}`;
 }
 
@@ -130,7 +130,7 @@ function getPhotos(photoTemplate, elems) {
   const photos = [];
   for (let i = 0; i < elems.length; i++) {
     const newPhoto = photo.cloneNode(true);
-    newPhoto.src = elems[i].src;
+    newPhoto.src = elems[i];
     photos.push(newPhoto);
   }
   return photos;
@@ -166,7 +166,7 @@ function getFeatureClass(feature) {
 
 function takeTypeRus(elem) {
   if (elem) {
-    return TYPES[elem];
+    return types[elem];
   }
 }
 
