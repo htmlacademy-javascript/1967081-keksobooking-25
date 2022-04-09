@@ -1,9 +1,9 @@
-const avatarFileChooser = document.querySelector('#avatar');
-const avatarPreview = document.querySelector('.ad-form-header__preview img');
 const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
-const adsFileChooser = document.querySelector('#images');
 const IMG_HEIGHT = 44;
 const IMG_WIDTH = 40;
+const avatarFileChooser = document.querySelector('#avatar');
+const avatarPreview = document.querySelector('.ad-form-header__preview img');
+const adsFileChooser = document.querySelector('#images');
 
 function onChangeAvatar() {
   const file = avatarFileChooser.files[0];
