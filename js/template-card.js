@@ -52,7 +52,64 @@ const guestsDeclination = {
   30: '-и гостей',
 };
 
-function createCard(announcement) {
+const getPrice = (price) => (
+  `${price} ₽/ночь`
+);
+
+const getCheckinCheckout = (checkin, checkout) => (
+  `Заезд после ${checkin} , выезд до ${checkout}`
+);
+
+const getRoomsGuests = (rooms, guests) => {
+  const textRooms = roomsDeclination[rooms];
+  const textGuests = guestsDeclination[guests];
+  return  `${rooms} ${textRooms} для ${guests}${textGuests}`;
+};
+
+const getPhotos = (photoTemplate, elems) => {
+  const photo = photoTemplate.querySelector('img');
+  const photos = [];
+  elems.forEach((elem) => {
+    const newPhoto = photo.cloneNode(true);
+    newPhoto.src = elem;
+    photos.push(newPhoto);
+  });
+  return photos;
+};
+
+const addPhotosHtml = (photoTemplate, photos) => {
+  photoTemplate.innerHTML = '';
+  photos.forEach((elem) => photoTemplate.appendChild(elem));
+};
+
+const getFeatureClass = (feature) => (
+  `popup__feature--${feature}`
+);
+
+const createFeatures = (offerFeatures) => {
+  const features = [];
+  offerFeatures.forEach((elem) => {
+    const htmlLi = document.createElement('li');
+    htmlLi.classList.add('popup__feature');
+    const featureClass = getFeatureClass(elem);
+    htmlLi.classList.add(featureClass);
+    features.push(htmlLi);
+  });
+  return features;
+};
+
+const addFeatures = (popupFeatures, features) => {
+  popupFeatures.innerHTML = '';
+  features.forEach((elems) => popupFeatures.appendChild(elems));
+};
+
+const takeTypeRus = (elem) => {
+  if (elem) {
+    return types[elem];
+  }
+};
+
+const createCard = (announcement) => {
   const template = document.querySelector('#card').content;
   const templateArticle = template.querySelector('article');
   const newArticle = templateArticle.cloneNode(true);
@@ -109,65 +166,6 @@ function createCard(announcement) {
     avatar.classList.add(HIDDEN_CLASS);
   }
   return newArticle;
-}
-
-function getPrice(price) {
-  return  `${price} ₽/ночь`;
-}
-
-function getCheckinCheckout(checkin, checkout) {
-  return  `Заезд после ${checkin} , выезд до ${checkout}`;
-}
-
-function getRoomsGuests(rooms, guests) {
-  const textRooms = roomsDeclination[rooms];
-  const textGuests = guestsDeclination[guests];
-  return  `${rooms} ${textRooms} для ${guests}${textGuests}`;
-}
-
-function getPhotos(photoTemplate, elems) {
-  const photo = photoTemplate.querySelector('img');
-  const photos = [];
-  for (let i = 0; i < elems.length; i++) {
-    const newPhoto = photo.cloneNode(true);
-    newPhoto.src = elems[i];
-    photos.push(newPhoto);
-  }
-  return photos;
-}
-
-function addPhotosHtml(photoTemplate, photos) {
-  photoTemplate.innerHTML = '';
-  for (let i = 0; i < photos.length; i++) {
-    photoTemplate.appendChild(photos[i]);
-  }
-}
-
-function createFeatures(offerFeatures) {
-  const features = [];
-  for (let i = 0; i < offerFeatures.length; i++) {
-    const htmlLi = document.createElement('li');
-    htmlLi.classList.add('popup__feature');
-    const featureClass = getFeatureClass(offerFeatures[i]);
-    htmlLi.classList.add(featureClass);
-    features.push(htmlLi);
-  }
-  return features;
-}
-
-function addFeatures(popupFeatures, features) {
-  popupFeatures.innerHTML = '';
-  features.forEach((elems) => popupFeatures.appendChild(elems));
-}
-
-function getFeatureClass(feature) {
-  return `popup__feature--${feature}`;
-}
-
-function takeTypeRus(elem) {
-  if (elem) {
-    return types[elem];
-  }
-}
+};
 
 export { createCard };

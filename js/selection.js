@@ -22,7 +22,7 @@ const priceFilters = {
   },
 };
 
-function checkHousingType(offer, isInFilters) {
+const checkHousingType = (offer, isInFilters) => {
   if (housingType.value === 'any') {
     return isInFilters;
   }
@@ -30,9 +30,9 @@ function checkHousingType(offer, isInFilters) {
     return false;
   }
   return isInFilters;
-}
+};
 
-function checkHousingPrice(offer, isInFilters) {
+const checkHousingPrice = (offer, isInFilters) => {
   if (housingPrice.value === 'any') {
     return isInFilters;
   }
@@ -44,9 +44,9 @@ function checkHousingPrice(offer, isInFilters) {
     }
   }
   return isInFilters;
-}
+};
 
-function checkHousingRooms(offer, isInFilters) {
+const checkHousingRooms = (offer, isInFilters) => {
   if (housingRooms.value === 'any') {
     return isInFilters;
   }
@@ -54,9 +54,9 @@ function checkHousingRooms(offer, isInFilters) {
     return false;
   }
   return isInFilters;
-}
+};
 
-function checkHousingGuests(offer, isInFilters) {
+const checkHousingGuests = (offer, isInFilters) => {
   if (housingGuests.value === 'any') {
     return isInFilters;
   }
@@ -67,15 +67,15 @@ function checkHousingGuests(offer, isInFilters) {
     return false;
   }
   return isInFilters;
-}
+};
 
-function getArrayCheckedFeaturesInputs(housingFeaturesChecked) {
+const getArrayCheckedFeaturesInputs = (housingFeaturesChecked) => (
 
-  return housingFeaturesChecked.length ? [...housingFeaturesChecked].map((elem) => elem.value) : [];
+  housingFeaturesChecked.length ? [...housingFeaturesChecked].map((elem) => elem.value) : []
 
-}
+);
 
-function checkHousingFeatures(offer, isInFilters, housingFeaturesChecked) {
+const checkHousingFeatures = (offer, isInFilters, housingFeaturesChecked) => {
   if (!offer.features) {
     return false;
   }
@@ -90,9 +90,9 @@ function checkHousingFeatures(offer, isInFilters, housingFeaturesChecked) {
   }
 
   return isInFilters;
-}
+};
 
-function checkFilters(announcement) {
+const checkFilters = (announcement) => {
   let isInFilters = true;
   const housingFeaturesChecked = housingFeaturesFieldset.querySelectorAll('.map__checkbox:checked');
   const offer = announcement.offer;
@@ -102,12 +102,12 @@ function checkFilters(announcement) {
   isInFilters = checkHousingGuests(offer, isInFilters);
   isInFilters = checkHousingFeatures(offer, isInFilters, housingFeaturesChecked);
   return isInFilters;
-}
+};
 
-function getAdsInFilters(announcements) {
+const getAdsInFilters = (announcements) => {
   const cloneAnnouncements = [...announcements];
   const filteredAnnouncements = cloneAnnouncements.filter(checkFilters);
   return filteredAnnouncements;
-}
+};
 
 export { getAdsInFilters };
