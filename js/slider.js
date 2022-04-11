@@ -1,4 +1,4 @@
-import { onPriceChange } from './validationForms.js';
+import { onPriceChange } from './validation-forms.js';
 
 const MIN_RANGE = 0;
 const MAX_PRICE = 100000;

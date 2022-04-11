@@ -1,20 +1,19 @@
-import { showErrorMessage } from './validationForms.js';
+import { onError } from './validation-forms.js';
 
 const TEXT_ERROR_GETDATA = 'Не удалось загрузить объявления!';
 
 const loadDataFromServer = (onSuccess) => {
-  fetch('https://25.javascript.pages.academy/keksobooking/data')
+  fetch('https://25.javascript.pages.academy/keksobooking/data1')
     .then((response) => {
       if (response.ok) {
         return response.json();
-      } else {
-        throw new Error();
       }
+      throw new Error();
     })
     .then((announcements) => {
       onSuccess(announcements);
     })
-    .catch(() => showErrorMessage(TEXT_ERROR_GETDATA));
+    .catch(() => onError(TEXT_ERROR_GETDATA));
 };
 
 const sendDataToServer = (onSuccess, onFail, body) => {
