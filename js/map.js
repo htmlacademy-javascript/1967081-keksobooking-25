@@ -26,32 +26,34 @@ const adFormFieldsets = adForm.querySelectorAll('fieldset');
 const mapFilter = document.querySelector('.map__filters');
 const mapFilterFieldsets = mapFilter.querySelectorAll('select,fieldset');
 const adress = document.querySelector('#address');
-const map = createFirstLayer();
-const mainIconLayer = createNewLayer();
-const pointsLayer = createNewLayer();
 const filters = document.querySelector('.map__filters-container');
 
-function createFirstLayer() {
-  return L.map('map-canvas')
+const createFirstLayer = () => (
+  L.map('map-canvas')
     .setView({
       lat: START_LAT,
       lng: START_LNG,
-    }, START_MAP_ZOOM);
+    }, START_MAP_ZOOM)
 
-}
+);
 
-function initializateTitleLayer() {
+const map = createFirstLayer();
+
+const createNewLayer = () => (
+  L.layerGroup().addTo(map)
+);
+
+const mainIconLayer = createNewLayer();
+const pointsLayer = createNewLayer();
+
+const initializateTitleLayer = () => {
   L.tileLayer(
     'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
     {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     },
   ).addTo(map);
-}
-
-function createNewLayer() {
-  return L.layerGroup().addTo(map);
-}
+};
 
 const createPin = (isMainIcon) => (isMainIcon ? (
   L.icon({

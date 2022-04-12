@@ -136,7 +136,7 @@ const createTemplateErrorMessage = () => {
   hideElement(errorDiv);
   errorButton.addEventListener('click', (evt) => {
     evt.preventDefault();
-    hideErrorMessage();
+    onErrorMessageHide();
   });
   document.body.append(errorMessage);
 };
@@ -147,22 +147,22 @@ const createTemplateMessages = () => {
 };
 
 const removeErrorMesageListeners = () => {
-  document.removeEventListener('click', hideErrorMessage);
-  document.removeEventListener('keydown', hideErrorMessageOnKeydown);
+  document.removeEventListener('click', onErrorMessageHide);
+  document.removeEventListener('keydown', onErrorMessageKeydown);
 };
 
 const removeSuccessMesageListeners = () => {
-  document.removeEventListener('click', hideDivSucces);
-  document.removeEventListener('keydown', hideDivSuccesOnKeydown);
+  document.removeEventListener('click', onDivSuccesHide);
+  document.removeEventListener('keydown', onDivSuccesKeydown);
 };
 
-function hideDivSucces() {
+function onDivSuccesHide() {
   const divSuccess = document.querySelector('.success');
   hideElement(divSuccess);
   removeSuccessMesageListeners();
 }
 
-function hideDivSuccesOnKeydown(key) {
+function onDivSuccesKeydown(key) {
   const divSuccess = document.querySelector('.success');
   if (key.code === 'Escape') {
     hideElement(divSuccess);
@@ -170,13 +170,13 @@ function hideDivSuccesOnKeydown(key) {
   }
 }
 
-function hideErrorMessage() {
+function onErrorMessageHide() {
   const errorMessage = document.querySelector('.error');
   hideElement(errorMessage);
   removeErrorMesageListeners();
 }
 
-function hideErrorMessageOnKeydown(key) {
+function onErrorMessageKeydown(key) {
   const divSuccess = document.querySelector('.error');
   if (key.code === 'Escape') {
     hideElement(divSuccess);
@@ -187,8 +187,8 @@ function hideErrorMessageOnKeydown(key) {
 const showSuccessMessage = () => {
   const divSuccess = document.querySelector('.success');
   divSuccess.classList.remove(HIDDEN_CLASS);
-  document.addEventListener('click', hideDivSucces);
-  document.addEventListener('keydown', hideDivSuccesOnKeydown);
+  document.addEventListener('click', onDivSuccesHide);
+  document.addEventListener('keydown', onDivSuccesKeydown);
 };
 
 const showErrorMessage = (message) => {
@@ -196,8 +196,8 @@ const showErrorMessage = (message) => {
   const errorText = document.querySelector('.error__message');
   errorText.textContent = message;
   errorDiv.classList.remove(HIDDEN_CLASS);
-  document.addEventListener('click', hideErrorMessage);
-  document.addEventListener('keydown', hideErrorMessageOnKeydown);
+  document.addEventListener('click', onErrorMessageHide);
+  document.addEventListener('keydown', onErrorMessageKeydown);
 };
 
 const onError = (message) => {
