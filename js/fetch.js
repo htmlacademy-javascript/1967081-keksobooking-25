@@ -3,7 +3,7 @@ import { onError } from './validation-forms.js';
 const TEXT_ERROR_GETDATA = 'Не удалось загрузить объявления!';
 
 const loadDataFromServer = (onSuccess) => {
-  fetch('https://25.javascript.pages.academy/keksobooking/data1')
+  fetch('https://25.javascript.pages.academy/keksobooking/data')
     .then((response) => {
       if (response.ok) {
         return response.json();

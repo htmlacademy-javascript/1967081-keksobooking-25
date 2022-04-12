@@ -8,7 +8,7 @@ const MARGIN = 100;
 const sliderElement = document.querySelector('.ad-form__slider');
 const valueElement = document.querySelector('#price');
 
-function initializatePriceSlider() {
+const initializatePriceSlider = () =>{
   noUiSlider.create(sliderElement, {
     range: {
       min: MIN_RANGE,
@@ -24,6 +24,6 @@ function initializatePriceSlider() {
     valueElement.value = sliderElement.noUiSlider.get();
     onPriceChange();
   });
-}
+};
 
 export { initializatePriceSlider, MAX_PRICE };
