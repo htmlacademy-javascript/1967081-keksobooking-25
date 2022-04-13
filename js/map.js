@@ -46,7 +46,7 @@ const createNewLayer = () => (
 const mainIconLayer = createNewLayer();
 const pointsLayer = createNewLayer();
 
-const initializateTitleLayer = () => {
+const initializeTitleLayer = () => {
   L.tileLayer(
     'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
     {
@@ -100,7 +100,7 @@ const createPoints = (announcements) => {
   }
 };
 
-const onChangeFilters = (announcements) => {
+const changeFilters = (announcements) => {
   createPoints(announcements);
 };
 
@@ -128,11 +128,11 @@ const activateMap = () => {
 
 const addEventFilters = (announcements) => {
   const getDebouncedFunction = (copyAnnouncements) => debounce(() => {
-    onChangeFilters(copyAnnouncements);
+    changeFilters(copyAnnouncements);
   }, RERENDER_DELAY);
-  const callbackOnChangeFilters = getDebouncedFunction(announcements);
-  filters.addEventListener('change', callbackOnChangeFilters);
-  filters.addEventListener('reset', callbackOnChangeFilters);
+  const onFiltersChange = getDebouncedFunction(announcements);
+  filters.addEventListener('change', onFiltersChange);
+  filters.addEventListener('reset', onFiltersChange);
 };
 
 const setAdress = (lat, lng) => {
@@ -162,16 +162,16 @@ const createIconStartLocation = () => {
 
 const createMap = (announcements) => {
   addEventFilters(announcements);
-  initializateTitleLayer();
+  initializeTitleLayer();
   createIconStartLocation();
   activateMap();
-  onChangeFilters(announcements);
+  changeFilters(announcements);
 };
 
-const initializateMap = () => {
+const initializeMap = () => {
   createTemplateMessages();
   deactivateMap();
   loadDataFromServer(createMap);
 };
 
-export { initializateMap, onChangeFilters, createIconStartLocation, activateAds, initializateTitleLayer };
+export { initializeMap, changeFilters, createIconStartLocation, activateAds, initializeTitleLayer };

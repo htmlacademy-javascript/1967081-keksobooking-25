@@ -1,4 +1,4 @@
-import { onError } from './validation-forms.js';
+import { failLoadDataFromServer } from './validation-forms.js';
 
 const TEXT_ERROR_GETDATA = 'Не удалось загрузить объявления!';
 
@@ -13,7 +13,7 @@ const loadDataFromServer = (onSuccess) => {
     .then((announcements) => {
       onSuccess(announcements);
     })
-    .catch(() => onError(TEXT_ERROR_GETDATA));
+    .catch(() => failLoadDataFromServer(TEXT_ERROR_GETDATA));
 };
 
 const sendDataToServer = (onSuccess, onFail, body) => {
