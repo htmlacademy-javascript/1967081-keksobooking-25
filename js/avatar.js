@@ -7,7 +7,7 @@ const avatarPreview = document.querySelector('.ad-form-header__preview img');
 const adsFileChooser = document.querySelector('#images');
 
 
-const onChangeAvatar = () => {
+const onAvatarChange = () => {
   const file = avatarFileChooser.files[0];
   const fileName = file.name.toLowerCase();
   const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
@@ -16,7 +16,7 @@ const onChangeAvatar = () => {
   }
 };
 
-const onChangeAdsImg = () => {
+const onAdsImgChange = () => {
   const file = adsFileChooser.files[0];
   const fileName = file.name.toLowerCase();
   const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
@@ -38,8 +38,8 @@ const addAdsSrc = ()=> {
 
 const addImages =() => {
   addAdsSrc();
-  avatarFileChooser.addEventListener('change', onChangeAvatar);
-  adsFileChooser.addEventListener('change', onChangeAdsImg);
+  avatarFileChooser.addEventListener('change', onAvatarChange);
+  adsFileChooser.addEventListener('change', onAdsImgChange);
 };
 
 export { addImages, NO_PHOTO_IMG };
