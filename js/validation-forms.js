@@ -1,22 +1,22 @@
 import { NO_PHOTO_IMG } from './avatar.js';
 import { sendDataToServer } from './fetch.js';
-import { activateAds, createIconStartLocation, initializeTitleLayer } from './map.js';
+import { activateAds, createIconStartLocation, initializateTitleLayer } from './map.js';
 import { MAX_PRICE, START_STEP } from './slider.js';
 
 const TEXT_ERROR_SEND_DATA = 'Ошибка размещения объявления!';
 const HIDDEN_CLASS = 'hidden';
-const adsForm = document.querySelector('.ad-form');
+const orderForm = document.querySelector('.ad-form');
 const resetButton = document.querySelector('.ad-form__reset');
 const filtersForm = document.querySelector('.map__filters');
-const capacity = adsForm.querySelector('#capacity');
+const capacity = orderForm.querySelector('#capacity');
 const roomNumber = document.querySelector('#room_number');
-const title = adsForm.querySelector('#title');
-const price = adsForm.querySelector('#price');
-const type = adsForm.querySelector('#type');
+const title = orderForm.querySelector('#title');
+const price = orderForm.querySelector('#price');
+const type = orderForm.querySelector('#type');
 const submitButton = document.querySelector('.ad-form__submit');
 const templateSuccess = document.querySelector('#success').content;
 const templateError = document.querySelector('#error').content;
-const pristine = new Pristine(adsForm, {
+const pristine = new Pristine(orderForm, {
   classTo: 'ad-form__element',
   errorClass: 'form__item--invalid',
   successClass: 'form__item--valid',
@@ -114,7 +114,7 @@ const onTypeChange = () => {
 };
 
 const resetForms = () => {
-  adsForm.reset();
+  orderForm.reset();
   filtersForm.reset();
   createIconStartLocation();
   price.setAttribute('placeholder', START_STEP);
@@ -201,42 +201,42 @@ const showErrorMessage = (message) => {
   document.addEventListener('keydown', onErrorMessageKeydown);
 };
 
-const failLoadDataFromServer = (message) => {
+const onError = (message) => {
   showErrorMessage(message);
   activateAds();
-  initializeTitleLayer();
+  initializateTitleLayer();
   createIconStartLocation();
 };
 
-const sendDataToServerSuccess = () => {
+const onSendDataToServerSuccess = () => {
   unblockSubmitButton();
   resetForms();
   showSuccessMessage();
 };
 
-const sendDataToServerFail = () => {
+const onSendDataToServerFail = () => {
   showErrorMessage(TEXT_ERROR_SEND_DATA);
   unblockSubmitButton();
 };
 
-const onAdsFormSubmit = (evt) => {
+const onSubmitValidForm = (evt) => {
   blockSubmitButton();
   sendDataToServer(
     () => {
-      sendDataToServerSuccess();
+      onSendDataToServerSuccess();
     },
     () => {
-      sendDataToServerFail();
+      onSendDataToServerFail();
     },
     new FormData(evt.target),
   );
 };
 
-adsForm.addEventListener('submit', (evt) => {
+orderForm.addEventListener('submit', (evt) => {
   evt.preventDefault();
   const isValid = pristine.validate();
   if (isValid) {
-    onAdsFormSubmit(evt);
+    onSubmitValidForm(evt);
   }
 });
 
@@ -256,4 +256,4 @@ const initializeFormValidation = () => {
   type.addEventListener('change', onTypeChange);
 };
 
-export { initializeFormValidation, onPriceChange, showErrorMessage, createTemplateMessages, MAX_PRICE, failLoadDataFromServer };
+export { initializeFormValidation, onPriceChange, showErrorMessage, createTemplateMessages, MAX_PRICE, onError };
